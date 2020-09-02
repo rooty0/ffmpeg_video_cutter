@@ -1,0 +1,14 @@
+---
+input: "zoom_0.mp4"
+output: "zoom_0_cut.mp4"
+# You can use "delete" to delete frames for provided time or
+#  "select" to keep frames for selected time and delete everything else
+# You can NOT use both!
+cut_method: delete
+timeframe:  # select what scenes you want to keep, you can use "start"/"end" keywords to tag first and last frame
+  - from: 6m
+    to: 8m
+  - from: 10m11s
+    to: 15m
+  - from: 1h1m1s
+    to: end
