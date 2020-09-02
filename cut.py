@@ -111,7 +111,7 @@ class FFCut:
         if self.INVERT_TIMEFRAME:
             return self.invert_time_pairs()
         else:
-            return self.generate_time_pairs()  # un-tested
+            return self.generate_time_pairs()
 
     def format_ffmpeg_call(self):
 
