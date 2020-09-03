@@ -13,7 +13,7 @@ on important information.
 ```shell script
 git clone https://github.com/rooty0/ffmpeg_video_cutter.git
 cd ffmpeg_video_cutter
-mkdir profiles && cp profile_example.yaml profiles/anyname.yaml.json
+mkdir profiles && cp profile_example.yaml profiles/anyname.yaml
 python3 -m venv venv
 venv/bin/pip install -r requirements.txt
 ```
@@ -22,7 +22,7 @@ venv/bin/pip install -r requirements.txt
 
 While watching a video using your favorite multimedia player just make notes what you want to cut out, something like:
 ```shell script
-vi profiles/anyname.yaml.json
+vi profiles/anyname.yaml
 ```
 ``` yaml
 ---
@@ -42,5 +42,5 @@ Now just run the tool to cut out the video fragments, and you'll get clean confe
 again and again in future without spending extra time skipping the off-topic discussion
 
 ```shell script
-venv/bin/python cut.py -p profiles/anyname.yaml.yaml
+venv/bin/python cut.py -p profiles/anyname.yaml
 ```
