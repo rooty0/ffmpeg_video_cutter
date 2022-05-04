@@ -10,5 +10,5 @@ timeframe:  # select what scenes you want to keep, you can use "start"/"end" key
     to: 8m
   - from: 10m11s
     to: 15m
-  - from: 1h1m1s
+  - from: 1hr1m1s
     to: end
