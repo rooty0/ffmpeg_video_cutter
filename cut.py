@@ -177,7 +177,8 @@ if __name__ == '__main__':
         if args.link and (args.start_time is not None or args.end_time is not None):
             resolution = 'low'
             if args.resolution: # resolution 'high' could be fail.
-                resolution = str(resolution)
+                resolution = str(args.resolution)
+            print('resolution: ', resolution)
             yt = YTDownloader(url=args.link, resolution=resolution)
             yt.download()
 
@@ -197,7 +198,6 @@ if __name__ == '__main__':
             configs['output'] = f'{file_name}_cut.mp4'
             configs['cut_method'] = 'select'
             configs['timeframe'] = [{'from' : start_time, 'to' : end_time}]
-            
             # Write the file into /profiles:
             with open(f'profiles/{file_name}.yaml', 'w') as f:
                 yaml.dump(configs, f, sort_keys=False)
@@ -212,4 +212,10 @@ if __name__ == '__main__':
         ffcut_object.show_video_info()
         pprint(ffcut_object.format_ffmpeg_call())
 
-    
+    choice = input('Remove full video and keep just the cropped version? [Y/N] ')
+    if choice.capitalize() == 'Y':
+        print('Removing full video...')
+        os.remove(f'{file_name}.mp4')
+    else:
+        print('Keeping full video!')
+
