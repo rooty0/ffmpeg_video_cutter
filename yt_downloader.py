@@ -1,4 +1,5 @@
 from pytube import YouTube
+from pytube import exceptions
 import os
 
 class YTDownloader:
@@ -9,9 +10,15 @@ class YTDownloader:
 
     def download(self):
         itag = self.get_resolution()
-        stream = self.yt.streams.get_by_itag(itag)
         file_name = "".join(ch for ch in self.yt.title if ch.isalnum()) + '.mp4' # remove special characteres.
-        stream.download(filename=file_name)
+        try:
+            stream = self.yt.streams.get_by_itag(itag)
+            stream.download(filename=file_name)
+        except AttributeError as e:
+            print(e)
+            print('This script does not yet support high quality videos, changing to a medium resolution.')
+            stream = self.yt.streams.get_by_itag(22)
+            stream.download(filename=file_name)
         print(f'\n"{self.yt.title}" Vídeo Downloaded!')
 
     def get_resolution(self):
