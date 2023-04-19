@@ -1,4 +1,5 @@
 from pytube import YouTube
+import os
 
 class YTDownloader:
     def __init__(self, url, resolution):
@@ -9,7 +10,8 @@ class YTDownloader:
     def download(self):
         itag = self.get_resolution()
         stream = self.yt.streams.get_by_itag(itag)
-        stream.download()
+        file_name = "".join(ch for ch in self.yt.title if ch.isalnum()) + '.mp4' # remove special characteres.
+        stream.download(filename=file_name)
         print(f'\n"{self.yt.title}" Vídeo Downloaded!')
 
     def get_resolution(self):

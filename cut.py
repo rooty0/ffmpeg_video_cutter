@@ -175,7 +175,7 @@ if __name__ == '__main__':
     else:
         # Extract Video from Youtube and cut-him via profile.
         if args.link and (args.start_time is not None or args.end_time is not None):
-            resolution = 'low'
+            resolution = 'medium'
             if args.resolution: # resolution 'high' could be fail.
                 resolution = str(args.resolution)
             print('resolution: ', resolution)
@@ -193,7 +193,7 @@ if __name__ == '__main__':
             with open('profile_example.yaml', 'r') as f:
                 configs = yaml.load(f, Loader=yaml.FullLoader)
             # Write into that dictionary the new values
-            file_name = yt.yt.title
+            file_name = "".join(ch for ch in yt.yt.title if ch.isalnum()) # remove special characteres.
             configs['input'] = f'{file_name}.mp4'
             configs['output'] = f'{file_name}_cut.mp4'
             configs['cut_method'] = 'select'
