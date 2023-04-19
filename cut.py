@@ -173,7 +173,7 @@ if __name__ == '__main__':
         else:
             ffcut_object = FFCut(profile_path=args.profile)
     else:
-        # Extract Video from Youtube and cut-him.
+        # Extract Video from Youtube and cut-him via profile.
         if args.link and (args.start_time is not None or args.end_time is not None):
             resolution = 'low'
             if args.resolution: # resolution 'high' could be fail.
@@ -193,16 +193,16 @@ if __name__ == '__main__':
                 configs = yaml.load(f, Loader=yaml.FullLoader)
             # Write into that dictionary the new values
             file_name = yt.yt.title
-            configs['input'] = configs['output'] = f'{file_name}.mp4'
+            configs['input'] = f'{file_name}.mp4'
+            configs['output'] = f'{file_name}_cut.mp4'
             configs['cut_method'] = 'select'
-            configs['timeframe'] = {'from' : start_time, 'to' : end_time}
-            print('\nnew configs: ', configs)
+            configs['timeframe'] = [{'from' : start_time, 'to' : end_time}]
             
             # Write the file into /profiles:
-            with open('profiles/video-1-profile.yaml', 'w') as f:
+            with open(f'profiles/{file_name}.yaml', 'w') as f:
                 yaml.dump(configs, f, sort_keys=False)
-                print('Write yaml file in profiles/')
-                ffcut_object = FFCut(profile_path='profiles/video-1-profile.yaml')
+                print(f'Write yaml file in profiles/{file_name}.yaml')
+                ffcut_object = FFCut(profile_path=f'profiles/{file_name}.yaml')
         else:
             raise Exception("--start-time and/or --end-time must be passed to cut the video")
 
