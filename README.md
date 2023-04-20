@@ -44,3 +44,23 @@ again and again in future without spending extra time skipping the off-topic dis
 ```shell script
 venv/bin/python cut.py -p profiles/anyname.yaml
 ```
+
+## Download and cut a Youtube Video.
+```shell script
+venv/bin/python cut.py --link <link> --start-time <start-time> --end-time <end-time>
+```
+#### Examples.
+```shell script
+# Download the video and cut from start to 1:40
+venv/bin/python cut.py --link https://www.youtube.com/watch?v=CML6vfKjQss --end-time 1m40s
+```
+
+```shell script
+# Download the vídeo and cut from 1:05 to end of video
+venv/bin/python cut.py --link https://www.youtube.com/watch?v=CML6vfKjQss --start-time 1m5s
+```
+
+```shell script
+# Download the video and cut from 1:05 to 2:30
+venv/bin/python cut.py --link https://www.youtube.com/watch?v=CML6vfKjQss --start-time 1m5s --end-time 2m30s
+```

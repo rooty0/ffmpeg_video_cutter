@@ -8,6 +8,8 @@ import subprocess
 
 from pprint import pprint
 
+from pytube import YouTube
+from yt_downloader import YTDownloader
 
 class FFCut:
     def __init__(self, profile_path, ffmpeg_path="/usr/local/bin/ffmpeg", ffprobe_path="/usr/local/bin/ffprobe"):
@@ -144,17 +146,65 @@ if __name__ == '__main__':
         description='\033[93m[[ FFMPEG Cutter ]]\033[0m',
     )
     parser.add_argument(
-        '--profile', '-p', dest='profile', help='yaml file with details', required=True,
+        '--profile', '-p', dest='profile', help='yaml file with details', required=False,
     )
     parser.add_argument(
         '--show-command', dest='show_command', help='do not run ffmpeg, just show a command', action="store_true"
     )
+    parser.add_argument(
+        '--link', dest='link', help='youtube video link', required=False
+    )
+    parser.add_argument(
+        '--resolution', dest='resolution', help='youtube video resolution', required=False 
+    )
+    parser.add_argument(
+        '--start-time', dest='start_time', help='set where the cut start', required=False
+    )
+    parser.add_argument(
+        '--end-time', dest='end_time', help='set where the cut ends', required=False
+    )
+
     args = parser.parse_args()
+        
+    if args.profile:
+        # Default Function of Repo.
+        if not os.path.exists(args.profile):
+            raise Exception("Profile {} not found".format(args.profile))
+        else:
+            ffcut_object = FFCut(profile_path=args.profile)
+    else:
+        # Extract Video from Youtube and cut-him via profile.
+        if args.link and (args.start_time is not None or args.end_time is not None):
+            resolution = 'medium'
+            if args.resolution: # resolution 'high' could be fail.
+                resolution = str(args.resolution)
+            print('resolution: ', resolution)
+            yt = YTDownloader(url=args.link, resolution=resolution)
+            yt.download()
 
-    if not os.path.exists(args.profile):
-        raise Exception("Profile {} not found".format(args.profile))
-
-    ffcut_object = FFCut(profile_path=args.profile)
+            start_time = 'start'
+            end_time = 'end'
+            if args.start_time:
+                start_time = args.start_time
+            if args.end_time:
+                end_time = args.end_time
+            
+            # Read base profile file and convert to a configs dictionary
+            with open('profile_example.yaml', 'r') as f:
+                configs = yaml.load(f, Loader=yaml.FullLoader)
+            # Write into that dictionary the new values
+            file_name = "".join(ch for ch in yt.yt.title if ch.isalnum()) # remove special characteres.
+            configs['input'] = f'{file_name}.mp4'
+            configs['output'] = f'{file_name}_cut.mp4'
+            configs['cut_method'] = 'select'
+            configs['timeframe'] = [{'from' : start_time, 'to' : end_time}]
+            # Write the file into /profiles:
+            with open(f'profiles/{file_name}.yaml', 'w') as f:
+                yaml.dump(configs, f, sort_keys=False)
+                print(f'Write yaml file in profiles/{file_name}.yaml')
+                ffcut_object = FFCut(profile_path=f'profiles/{file_name}.yaml')
+        else:
+            raise Exception("--start-time and/or --end-time must be passed to cut the video")
 
     if not args.show_command:
         ffcut_object.apply_cut()
@@ -162,4 +212,10 @@ if __name__ == '__main__':
         ffcut_object.show_video_info()
         pprint(ffcut_object.format_ffmpeg_call())
 
+    choice = input('Remove full video and keep just the cropped version? [Y/N] ')
+    if choice.capitalize() == 'Y':
+        print('Removing full video...')
+        os.remove(f'{file_name}.mp4')
+    else:
+        print('Keeping full video!')
 
